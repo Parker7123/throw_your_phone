@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:throw_your_phone/ui/history/history_screen.dart';
+import 'package:throw_your_phone/ui/home/home_screen.dart';
+import 'package:throw_your_phone/ui/ranking/ranking_screean.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MainScreenController());
+  }
+}
+
+class MainScreenController extends StatefulWidget {
+  const MainScreenController({super.key});
+
+  @override
+  State<MainScreenController> createState() => _MainScreenControllerState();
+}
+
+class _MainScreenControllerState extends State<MainScreenController> {
+  int currentPageIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
+          NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Ranking'),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        selectedIndex: currentPageIndex,
+      ),
+      body: const <Widget>[
+        HomeScreen(),
+        HistoryScreen(),
+        RankingScreen(),
+      ][currentPageIndex],
+    );
+  }
+}
