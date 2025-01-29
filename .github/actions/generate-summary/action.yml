@@ -1,0 +1,67 @@
+name: 'Generate Workflow Summary'
+description: 'Generates a summary of the workflow run, including failed steps.'
+inputs:
+  dart_format_outcome:
+    description: 'Outcome of the dart format step'
+    required: true
+  flutter_pub_get_outcome:
+    description: 'Outcome of the flutter pub get step'
+    required: true
+  flutter_analyze_outcome:
+    description: 'Outcome of the flutter analyze step'
+    required: true
+  flutter_test_outcome:
+    description: 'Outcome of the flutter test step'
+    required: true
+  flutter_build_apk_outcome:
+    description: 'Outcome of the flutter build apk step'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate Summary
+      shell: bash
+      run: |
+        echo "Generating workflow summary..."
+        SUMMARY="### Workflow Failure Summary\n\n"
+
+        if [[ "${{ inputs.dart_format_outcome }}" != "success" ]]; then
+          SUMMARY+="#### Dart Format Failed\n"
+          SUMMARY+="```\n"
+          SUMMARY+="${{ inputs.dart_format_outcome }}\n"
+          SUMMARY+="```\n\n"
+        fi
+
+        if [[ "${{ inputs.flutter_pub_get_outcome }}" != "success" ]]; then
+          SUMMARY+="#### Flutter Pub Get Failed\n"
+          SUMMARY+="```\n"
+          SUMMARY+="${{ inputs.flutter_pub_get_outcome }}\n"
+          SUMMARY+="```\n\n"
+        fi
+
+        if [[ "${{ inputs.flutter_analyze_outcome }}" != "success" ]]; then
+          SUMMARY+="#### Flutter Analyze Failed\n"
+          SUMMARY+="```\n"
+          SUMMARY+="${{ inputs.flutter_analyze_outcome }}\n"
+          SUMMARY+="```\n\n"
+        fi
+
+        if [[ "${{ inputs.flutter_test_outcome }}" != "success" ]]; then
+          SUMMARY+="#### Flutter Test Failed\n"
+          SUMMARY+="```\n"
+          SUMMARY+="${{ inputs.flutter_test_outcome }}\n"
+          SUMMARY+="```\n\n"
+        fi
+
+        if [[ "${{ inputs.flutter_build_apk_outcome }}" != "success" ]]; then
+          SUMMARY+="#### Flutter Build APK Failed\n"
+          SUMMARY+="```\n"
+          SUMMARY+="${{ inputs.flutter_build_apk_outcome }}\n"
+          SUMMARY+="```\n\n"
+        fi
+
+        if [[ -n "$SUMMARY" ]]; then
+          echo -e "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### All Steps Succeeded" >> $GITHUB_STEP_SUMMARY
+        fi

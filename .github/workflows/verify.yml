@@ -39,48 +39,40 @@ jobs:
         id: flutter_build_apk
         continue-on-error: true
         run: flutter build apk --debug --split-per-abi
-
-      # Check for failures using step outcomes
-      - name: Check for failures
+  # Call the custom action to generate the summary
+      - name: Generate Workflow Summary
+        uses: ./.github/actions/generate-summary
+        with:
+         dart_format_outcome: "${{ steps.dart_format.outcome }}"
+         flutter_pub_get_outcome: "${{ steps.flutter_pub_get.outcome }}"
+         flutter_analyze_outcome: "${{ steps.flutter_analyze.outcome }}"
+         flutter_test_outcome: "${{ steps.flutter_test.outcome }}"
+         flutter_build_apk_outcome: "${{ steps.flutter_build_apk.outcome }}
+      
+      # Determine if any step failed
+      - name: Determine if any step failed
         id: check_failures
         run: |
-          echo "Checking for failures..."
-          FAILED_STEPS=""
-          if [[ "${{ steps.dart_format.outcome }}" != "success" ]]; then
-            FAILED_STEPS+="dart format\n"
-          fi
-          if [[ "${{ steps.flutter_pub_get.outcome }}" != "success" ]]; then
-            FAILED_STEPS+="flutter pub get\n"
-          fi
-          if [[ "${{ steps.flutter_analyze.outcome }}" != "success" ]]; then
-            FAILED_STEPS+="flutter analyze\n"
-          fi
-          if [[ "${{ steps.flutter_test.outcome }}" != "success" ]]; then
-            FAILED_STEPS+="flutter test\n"
-          fi
-          if [[ "${{ steps.flutter_build_apk.outcome }}" != "success" ]]; then
-            FAILED_STEPS+="flutter build apk\n"
-          fi
-
-          if [[ -n "$FAILED_STEPS" ]]; then
-            echo "The following steps failed:"
-            echo -e "$FAILED_STEPS"
-            echo "has_failures=true" >> $GITHUB_ENV
+          if [[ "${{ steps.dart_format.outcome }}" != 'success' ]] || \
+             [[ "${{ steps.flutter_pub_get.outcome }}" != 'success' ]] || \
+             [[ "${{ steps.flutter_analyze.outcome }}" != 'success' ]] || \
+             [[ "${{ steps.flutter_test.outcome }}" != 'success' ]] || \
+             [[ "${{ steps.flutter_build_apk.outcome }}" != 'success' ]]; then
+            echo "HAS_FAILURES=true" >> $GITHUB_ENV
           else
-            echo "All steps succeeded."
-            echo "has_failures=false" >> $GITHUB_ENV
+            echo "HAS_FAILURES=false" >> $GITHUB_ENV
           fi
 
       # Fail the workflow if any step failed
       - name: Fail workflow if any step failed
-        if: ${{ env.has_failures == 'true' }}
+        if: ${{ env.HAS_FAILURES == 'true' }}
         run: |
           echo "One or more steps failed. Failing the workflow."
           exit 1
 
       # Push APK to Releases (only if no failures)
       - name: Push APK to Releases
-        if: ${{ env.has_failures == 'false' }}
+        if: ${{ env.HAS_FAILURES == 'false' }}
         uses: actions/upload-artifact@v4
         with:
           name: app

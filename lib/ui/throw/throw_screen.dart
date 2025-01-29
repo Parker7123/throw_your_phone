@@ -11,7 +11,7 @@ class ThrowScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: ListenableBuilder(
-          listenable: viewModel,
+            listenable: viewModel,
           builder: (context, _) {
             return Column(
               children: [
