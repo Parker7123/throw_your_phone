@@ -43,11 +43,11 @@ jobs:
       - name: Generate Workflow Summary
         uses: ./.github/actions/generate-summary
         with:
-         dart_format_outcome: "${{ steps.dart_format.outcome }}"
-         flutter_pub_get_outcome: "${{ steps.flutter_pub_get.outcome }}"
-         flutter_analyze_outcome: "${{ steps.flutter_analyze.outcome }}"
-         flutter_test_outcome: "${{ steps.flutter_test.outcome }}"
-         flutter_build_apk_outcome: "${{ steps.flutter_build_apk.outcome }}
+          dart_format_outcome: "${{ steps.dart_format.outcome }}"
+          flutter_pub_get_outcome: "${{ steps.flutter_pub_get.outcome }}"
+          flutter_analyze_outcome: "${{ steps.flutter_analyze.outcome }}"
+          flutter_test_outcome: "${{ steps.flutter_test.outcome }}"
+          flutter_build_apk_outcome: "${{ steps.flutter_build_apk.outcome }}
       
       # Determine if any step failed
       - name: Determine if any step failed
