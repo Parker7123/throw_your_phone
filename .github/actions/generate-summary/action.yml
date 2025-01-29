@@ -23,45 +23,42 @@ runs:
       shell: bash
       run: |
         echo "Generating workflow summary..."
-        SUMMARY="### Workflow Failure Summary\n\n"
+        SUMMARY="### Workflow Failure Summary"
+        
+        # Helper function to append section
+        append_section() {
+          local title=$1
+          local outcome=$2
+          SUMMARY+=$'\n\n'"#### $title Failed"$'\n'
+          SUMMARY+='```'$'\n'
+          SUMMARY+="$outcome"$'\n'
+          SUMMARY+='```'
+        }
 
+        # Check each step
         if [[ "${{ inputs.dart_format_outcome }}" != "success" ]]; then
-          SUMMARY+="#### Dart Format Failed\n"
-          SUMMARY+="```\n"
-          SUMMARY+="${{ inputs.dart_format_outcome }}\n"
-          SUMMARY+="```\n\n"
+          append_section "Dart Format" "${{ inputs.dart_format_outcome }}"
         fi
 
         if [[ "${{ inputs.flutter_pub_get_outcome }}" != "success" ]]; then
-          SUMMARY+="#### Flutter Pub Get Failed\n"
-          SUMMARY+="```\n"
-          SUMMARY+="${{ inputs.flutter_pub_get_outcome }}\n"
-          SUMMARY+="```\n\n"
+          append_section "Flutter Pub Get" "${{ inputs.flutter_pub_get_outcome }}"
         fi
 
         if [[ "${{ inputs.flutter_analyze_outcome }}" != "success" ]]; then
-          SUMMARY+="#### Flutter Analyze Failed\n"
-          SUMMARY+="```\n"
-          SUMMARY+="${{ inputs.flutter_analyze_outcome }}\n"
-          SUMMARY+="```\n\n"
+          append_section "Flutter Analyze" "${{ inputs.flutter_analyze_outcome }}"
         fi
 
         if [[ "${{ inputs.flutter_test_outcome }}" != "success" ]]; then
-          SUMMARY+="#### Flutter Test Failed\n"
-          SUMMARY+="```\n"
-          SUMMARY+="${{ inputs.flutter_test_outcome }}\n"
-          SUMMARY+="```\n\n"
+          append_section "Flutter Test" "${{ inputs.flutter_test_outcome }}"
         fi
 
         if [[ "${{ inputs.flutter_build_apk_outcome }}" != "success" ]]; then
-          SUMMARY+="#### Flutter Build APK Failed\n"
-          SUMMARY+="```\n"
-          SUMMARY+="${{ inputs.flutter_build_apk_outcome }}\n"
-          SUMMARY+="```\n\n"
+          append_section "Flutter Build APK" "${{ inputs.flutter_build_apk_outcome }}"
         fi
 
-        if [[ -n "$SUMMARY" ]]; then
-          echo -e "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+        # Write to summary
+        if [[ "$SUMMARY" != "### Workflow Failure Summary" ]]; then
+          echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
         else
           echo "### All Steps Succeeded" >> $GITHUB_STEP_SUMMARY
         fi
