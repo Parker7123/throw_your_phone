@@ -37,7 +37,7 @@ class HistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: throwEntries
+          children: throwEntries
           .map((throwEntry) => ListTile(
                 title: const Text("Throw #"),
                 subtitle: Text("Distance: ${throwEntry.distance} m"),

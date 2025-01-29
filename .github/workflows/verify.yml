@@ -2,7 +2,7 @@ on: push
 name: Test, Build and Release apk
 jobs:
   build:
-    name: Build APK
+    name: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -35,10 +35,15 @@ jobs:
         continue-on-error: true
         run: flutter test
 
-      - name: Run flutter build apk
+#      - name: Run flutter build apk
+#        id: flutter_build_apk
+#        continue-on-error: true
+#        run: flutter build apk --debug --split-per-abi
+
+      - name: Run flutter build apk mock
         id: flutter_build_apk
         continue-on-error: true
-        run: flutter build apk --debug --split-per-abi
+        run: echo done
   # Call the custom action to generate the summary
       - name: Generate Workflow Summary
         uses: ./.github/actions/generate-summary

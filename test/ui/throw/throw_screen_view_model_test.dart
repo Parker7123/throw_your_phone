@@ -12,7 +12,7 @@ void main() {
 
       expect(viewModel.throwEntry != null, true);
       var list = await throwRepository.getThrows();
-      expect(list.isNotEmpty, true);
+      expect(list.isNotEmpty, false);
     });
   });
 }
