@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       shape: const CircleBorder(),
                       minimumSize: const Size(150, 150),
                       textStyle: const TextStyle(fontSize: 20)),
-                  child: const Text("Start throw")),
+                  child: const Text("New throw")),
             ],
           )
         ],
