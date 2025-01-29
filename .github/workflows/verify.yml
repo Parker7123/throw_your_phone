@@ -20,37 +20,52 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running dart format..."
-          dart format --set-exit-if-changed . > dart_format_output.txt 2>&1 || echo "dart_format_status=failed" >> $GITHUB_ENV
+          if ! dart format --set-exit-if-changed .; then
+            echo "dart_format_status=failed" >> $GITHUB_ENV
+            echo "::error::dart format failed"
+          fi
 
       - name: Run flutter pub get
         id: flutter_pub_get
         continue-on-error: true
         run: |
           echo "Running flutter pub get..."
-          flutter pub get > flutter_pub_get_output.txt 2>&1 || echo "flutter_pub_get_status=failed" >> $GITHUB_ENV
+          if ! flutter pub get; then
+            echo "flutter_pub_get_status=failed" >> $GITHUB_ENV
+            echo "::error::flutter pub get failed"
+          fi
 
       - name: Run flutter analyze
         id: flutter_analyze
         continue-on-error: true
         run: |
           echo "Running flutter analyze..."
-          flutter analyze > flutter_analyze_output.txt 2>&1 || echo "flutter_analyze_status=failed" >> $GITHUB_ENV
+          if ! flutter analyze; then
+            echo "flutter_analyze_status=failed" >> $GITHUB_ENV
+            echo "::error::flutter analyze failed"
+          fi
 
       - name: Run flutter test
         id: flutter_test
         continue-on-error: true
         run: |
           echo "Running flutter test..."
-          flutter test > flutter_test_output.txt 2>&1 || echo "flutter_test_status=failed" >> $GITHUB_ENV
+          if ! flutter test; then
+            echo "flutter_test_status=failed" >> $GITHUB_ENV
+            echo "::error::flutter test failed"
+          fi
 
       - name: Run flutter build apk
         id: flutter_build_apk
         continue-on-error: true
         run: |
           echo "Running flutter build apk..."
-          flutter build apk --debug --split-per-abi > flutter_build_apk_output.txt 2>&1 || echo "flutter_build_apk_status=failed" >> $GITHUB_ENV
+          if ! flutter build apk --debug --split-per-abi; then
+            echo "flutter_build_apk_status=failed" >> $GITHUB_ENV
+            echo "::error::flutter build apk failed"
+          fi
 
-      # Check for failures and print outputs
+      # Check for failures and print summary
       - name: Check for failures
         id: check_failures
         run: |
@@ -58,33 +73,18 @@ jobs:
           FAILED_STEPS=""
           if [[ "${{ env.dart_format_status }}" == "failed" ]]; then
             FAILED_STEPS+="dart format\n"
-            echo "::error::dart format failed"
-            echo "dart format output:"
-            cat dart_format_output.txt
           fi
           if [[ "${{ env.flutter_pub_get_status }}" == "failed" ]]; then
             FAILED_STEPS+="flutter pub get\n"
-            echo "::error::flutter pub get failed"
-            echo "flutter pub get output:"
-            cat flutter_pub_get_output.txt
           fi
           if [[ "${{ env.flutter_analyze_status }}" == "failed" ]]; then
             FAILED_STEPS+="flutter analyze\n"
-            echo "::error::flutter analyze failed"
-            echo "flutter analyze output:"
-            cat flutter_analyze_output.txt
           fi
           if [[ "${{ env.flutter_test_status }}" == "failed" ]]; then
             FAILED_STEPS+="flutter test\n"
-            echo "::error::flutter test failed"
-            echo "flutter test output:"
-            cat flutter_test_output.txt
           fi
           if [[ "${{ env.flutter_build_apk_status }}" == "failed" ]]; then
             FAILED_STEPS+="flutter build apk\n"
-            echo "::error::flutter build apk failed"
-            echo "flutter build apk output:"
-            cat flutter_build_apk_output.txt
           fi
 
           if [[ -n "$FAILED_STEPS" ]]; then
@@ -109,4 +109,3 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/debug/*.apk"
-          token: ${{ secrets.TOKEN }}
