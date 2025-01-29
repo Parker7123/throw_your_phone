@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:throw_your_phone/data/repositories/throw_repository.dart';
 import 'package:throw_your_phone/ui/history/history_screen.dart';
+import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
 import 'package:throw_your_phone/ui/home/home_screen.dart';
 import 'package:throw_your_phone/ui/ranking/ranking_screean.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    Provider(
+      create: (context) => InMemoryThrowRepository() as ThrowRepository,
+    )
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -49,10 +56,12 @@ class _MainScreenControllerState extends State<MainScreenController> {
         },
         selectedIndex: currentPageIndex,
       ),
-      body: const <Widget>[
-        HomeScreen(),
-        HistoryScreen(),
-        RankingScreen(),
+      body: <Widget>[
+        const HomeScreen(),
+        HistoryScreen(
+          viewModel: HistoryScreenViewModel(throwRepository: context.read()),
+        ),
+        const RankingScreen(),
       ][currentPageIndex],
     );
   }

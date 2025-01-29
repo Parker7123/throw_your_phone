@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:throw_your_phone/models/throw_entry.dart';
+import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
 
-class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({super.key});
+class HistoryScreen extends StatelessWidget {
+  const HistoryScreen({super.key, required this.viewModel});
 
-  @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
-}
+  final HistoryScreenViewModel viewModel;
 
-class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      children: List.generate(7, (int i) => ListTile(
-        title: Text("Throw #$i"),
-        subtitle: Text("Distance: $i m"),
-      )),
-    ));
+        body: FutureBuilder(
+            future: viewModel.load,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                return ListenableBuilder(
+                    listenable: viewModel,
+                    builder: (context, _) {
+                      return HistoryList(throwEntries: viewModel.throwEntries);
+                    });
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }));
+  }
+}
+
+class HistoryList extends StatelessWidget {
+  const HistoryList({super.key, required this.throwEntries});
+
+  final List<ThrowEntry> throwEntries;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: throwEntries
+          .map((throwEntry) => ListTile(
+                title: Text("Throw #"),
+                subtitle: Text("Distance: ${throwEntry.distance} m"),
+              ))
+          .toList(),
+    );
   }
 }

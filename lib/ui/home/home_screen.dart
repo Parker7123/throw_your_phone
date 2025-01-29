@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:throw_your_phone/ui/throw/throw_screen.dart';
+
+import '../throw/ThrowScreenViewModel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,7 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ThrowScreen()));
+                            builder: (context) => ThrowScreen(
+                              viewModel: ThrowScreenViewModel(throwRepository: context.read()),
+                            )));
                   },
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),

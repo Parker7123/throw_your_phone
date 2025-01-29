@@ -1,17 +1,29 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:throw_your_phone/ui/throw/ThrowScreenViewModel.dart';
 
-class ThrowScreen extends StatefulWidget {
-  const ThrowScreen({super.key});
+class ThrowScreen extends StatelessWidget {
+  const ThrowScreen({super.key, required this.viewModel});
 
-  @override
-  State<ThrowScreen> createState() => _ThrowScreenState();
-}
+  final ThrowScreenViewModel viewModel;
 
-class _ThrowScreenState extends State<ThrowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      body: ListenableBuilder(
+        listenable: viewModel,
+        builder: (context, _) {
+          return Column(
+            children: [
+              if (viewModel.throwEntry != null)
+                Text(viewModel.throwEntry!.distance.toString()),
+              TextButton(onPressed: () {viewModel.makeThrow();}, child: const Text("Throw")),
+            ],
+          );
+        }
+      ),
     );
   }
 }
