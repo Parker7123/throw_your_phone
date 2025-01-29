@@ -32,10 +32,10 @@ class _RankingScreenState extends State<RankingScreen> {
               ListView(
                 children: List.generate(
                     3,
-                        (int i) => ListTile(
-                      title: Text("Throw #$i"),
-                      subtitle: Text("Distance: $i m"),
-                    )),
+                    (int i) => ListTile(
+                          title: Text("Throw #$i"),
+                          subtitle: Text("Distance: $i m"),
+                        )),
               )
             ],
           )),

@@ -15,7 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Throw your phone"),),
+      appBar: AppBar(
+        title: const Text("Throw your phone"),
+      ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -30,8 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ThrowScreen(
-                              viewModel: ThrowScreenViewModel(throwRepository: context.read()),
-                            )));
+                                  viewModel: ThrowScreenViewModel(
+                                      throwRepository: context.read()),
+                                )));
                   },
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),

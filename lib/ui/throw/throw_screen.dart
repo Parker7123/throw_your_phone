@@ -13,17 +13,20 @@ class ThrowScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: ListenableBuilder(
-        listenable: viewModel,
-        builder: (context, _) {
-          return Column(
-            children: [
-              if (viewModel.throwEntry != null)
-                Text(viewModel.throwEntry!.distance.toString()),
-              TextButton(onPressed: () {viewModel.makeThrow();}, child: const Text("Throw")),
-            ],
-          );
-        }
-      ),
+          listenable: viewModel,
+          builder: (context, _) {
+            return Column(
+              children: [
+                if (viewModel.throwEntry != null)
+                  Text(viewModel.throwEntry!.distance.toString()),
+                TextButton(
+                    onPressed: () {
+                      viewModel.makeThrow();
+                    },
+                    child: const Text("Throw")),
+              ],
+            );
+          }),
     );
   }
 }
