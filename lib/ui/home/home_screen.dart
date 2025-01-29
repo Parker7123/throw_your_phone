@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:throw_your_phone/ui/throw/throw_screen.dart';
 
-import '../throw/ThrowScreenViewModel.dart';
+import '../throw/throw_screen_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

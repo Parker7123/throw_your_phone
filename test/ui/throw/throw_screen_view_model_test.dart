@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:throw_your_phone/data/repositories/throw_repository.dart';
-import 'package:throw_your_phone/ui/throw/ThrowScreenViewModel.dart';
+import 'package:throw_your_phone/ui/throw/throw_screen_view_model.dart';
 
 void main() {
   group('Throw screen view model test', () {

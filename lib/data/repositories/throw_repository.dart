@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:throw_your_phone/models/throw_entry.dart';
 
 abstract class ThrowRepository {

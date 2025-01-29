@@ -1,7 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:throw_your_phone/ui/throw/ThrowScreenViewModel.dart';
+import 'package:throw_your_phone/ui/throw/throw_screen_view_model.dart';
 
 class ThrowScreen extends StatelessWidget {
   const ThrowScreen({super.key, required this.viewModel});
