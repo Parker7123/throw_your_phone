@@ -32,6 +32,10 @@ class StartEndDetector {
       end = _i;
       print("end: $_i");
     }
+    if (start == null && x > endThreshold) {
+      earlyEnd = _i;
+      print("early end: $_i");
+    }
   }
 
   void _handleNoFluctuation(int t) {

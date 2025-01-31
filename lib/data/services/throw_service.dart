@@ -16,6 +16,7 @@ class ThrowService {
   List<Acceleration> _accelerationData = [];
   int? _releaseTimestamp;
   bool _done = false;
+  bool _firstEventSkipped = false;
 
   void _stopCollectingData() async {
     _done = true;
@@ -34,6 +35,7 @@ class ThrowService {
     _accelerationData = [];
     _releaseTimestamp = null;
     _done = false;
+    _firstEventSkipped = false;
   }
 
   processNewEvent(
@@ -47,22 +49,43 @@ class ThrowService {
     var da = (a - aLast).abs();
     startEndDetector.processNext(da, t);
     if (startEndDetector.start != null && startEndDetector.end != null) {
-      _stopCollectingData();
       var start = startEndDetector.start!;
       var end = startEndDetector.end!;
-
-      var endEvent = _accelerationData[start];
-      var startEvent = _accelerationData[end];
-      var startTimestamp = max(startEvent.timestamp, _releaseTimestamp!);
-      var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
-
-      var heightMeters = 1 / 8 * 9.81 * flightTimeSeconds * flightTimeSeconds;
-      _completer.complete(heightMeters);
+      processStartStopEvents(start, end);
+    } else if (startEndDetector.earlyEnd != null && _releaseTimestamp != null) {
+      var start = posOfFirstEventAfterTimestamp(_releaseTimestamp!);
+      var end = startEndDetector.earlyEnd!;
+      processStartStopEvents(start, end);
     }
+  }
+
+  int posOfFirstEventAfterTimestamp(int timestamp) {
+    for (var (i, event) in _accelerationData.indexed) {
+      if (event.timestamp >= timestamp) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  void processStartStopEvents(int start, int end) {
+    _stopCollectingData();
+
+    var startEvent = _accelerationData[start];
+    var endEvent = _accelerationData[end];
+    var startTimestamp = max(startEvent.timestamp, _releaseTimestamp!);
+    var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
+
+    var heightMeters = 1 / 8 * 9.81 * flightTimeSeconds * flightTimeSeconds;
+    _completer.complete(heightMeters);
   }
 
   void processData(UserAccelerometerEvent event) {
     if (!shouldProcessData()) {
+      return;
+    }
+    if (!_firstEventSkipped) {
+      _firstEventSkipped = true;
       return;
     }
     var acceleration = Acceleration(
