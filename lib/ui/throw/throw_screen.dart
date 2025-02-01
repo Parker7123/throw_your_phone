@@ -58,15 +58,32 @@ class _ThrowScreenState extends State<ThrowScreen> {
                     ],
                   ),
                   if (widget.viewModel.throwEntry != null) ...[
-                    Center(
-                      child: Text(
-                          "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
-                    ),
-                    TextButton(
-                        onPressed: () async {
-                          await widget.viewModel.reset();
-                        },
-                        child: const Text("Retry"))
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Throw statistics"),
+                        Container(height: 2),
+                        Container(
+                          height: 100,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 2.0, color: Colors.black)
+                          ),
+                          child: Center(
+                            child: Text(
+                                "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
+                          ),
+                        ),
+                        Container(height: 50),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await widget.viewModel.reset();
+                            },
+                            child: const Text("Retry"))
+                      ],
+                    ))
                   ] else if (buttonColor == Colors.red &&
                       widget.viewModel.throwInProgress) ...[
                     const CircularProgressIndicator()
