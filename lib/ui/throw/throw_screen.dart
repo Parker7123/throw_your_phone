@@ -60,11 +60,13 @@ class _ThrowScreenState extends State<ThrowScreen> {
                   if (widget.viewModel.throwEntry != null) ...[
                     Center(
                       child: Text(
-                          "Height: ${widget.viewModel.throwEntry?.height}m"),
+                          "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
                     ),
-                    TextButton(onPressed: () async {
-                      await widget.viewModel.reset();
-                    }, child: const Text("Retry"))
+                    TextButton(
+                        onPressed: () async {
+                          await widget.viewModel.reset();
+                        },
+                        child: const Text("Retry"))
                   ] else if (buttonColor == Colors.red &&
                       widget.viewModel.throwInProgress) ...[
                     const CircularProgressIndicator()
@@ -91,8 +93,11 @@ class _ThrowScreenState extends State<ThrowScreen> {
                         child: Container(
                           width: 200,
                           height: 200,
-                          color: buttonColor,
-                          child: Center(child: Text("Hold to throw")),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: buttonColor,
+                          ),
+                          child: Center(child: Text("Hold and throw")),
                         ),
                       )),
                     )

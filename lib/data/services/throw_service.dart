@@ -7,12 +7,12 @@ import 'package:throw_your_phone/data/services/acceleration.dart';
 import 'change_detector.dart';
 
 class ThrowService {
-   Completer<double> _completer = new Completer();
+  Completer<double> _completer = new Completer();
   final _stream = userAccelerometerEventStream(
       samplingPeriod: const Duration(milliseconds: 1));
   StreamSubscription<UserAccelerometerEvent>? _subscription;
   StartEndDetector startEndDetector =
-      StartEndDetector(threshold: 0.5, endThreshold: 5.0);
+  StartEndDetector(threshold: 0.5, endThreshold: 10);
   List<Acceleration> _accelerationData = [];
   int? _releaseTimestamp;
   bool _done = false;
@@ -31,19 +31,19 @@ class ThrowService {
   Future reset() async {
     await _subscription?.cancel();
     _subscription = null;
-    startEndDetector = StartEndDetector(threshold: 0.5, endThreshold: 5);
+    startEndDetector = StartEndDetector(threshold: 0.5, endThreshold: 10);
     _accelerationData = [];
     _releaseTimestamp = null;
     _done = false;
     _firstEventSkipped = false;
   }
 
-  processNewEvent(
-      Acceleration firstEvent, Acceleration lastEvent, Acceleration event) {
+  processNewEvent(Acceleration firstEvent, Acceleration lastEvent,
+      Acceleration event) {
     var t = event.timestamp - firstEvent.timestamp;
 
     var aLast =
-        sqrt(pow(lastEvent.x, 2) + pow(lastEvent.y, 2) + pow(lastEvent.z, 2));
+    sqrt(pow(lastEvent.x, 2) + pow(lastEvent.y, 2) + pow(lastEvent.z, 2));
     var a = sqrt(pow(event.x, 2) + pow(event.y, 2) + pow(event.z, 2));
 
     var da = (a - aLast).abs();
@@ -55,7 +55,10 @@ class ThrowService {
     } else if (startEndDetector.earlyEnd != null && _releaseTimestamp != null) {
       var start = posOfFirstEventAfterTimestamp(_releaseTimestamp!);
       var end = startEndDetector.earlyEnd!;
-      processStartStopEvents(start, end);
+      var endEvent = _accelerationData[end];
+      if (endEvent.timestamp - _releaseTimestamp! > 100) {
+        processStartStopEvents(start, end);
+      }
     }
   }
 
@@ -73,7 +76,10 @@ class ThrowService {
 
     var startEvent = _accelerationData[start];
     var endEvent = _accelerationData[end];
-    var startTimestamp = max(startEvent.timestamp, _releaseTimestamp!);
+
+    var startTimestamp = _releaseTimestamp != null
+        ? max(startEvent.timestamp, _releaseTimestamp!)
+        : startEvent.timestamp;
     var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
 
     var heightMeters = 1 / 8 * 9.81 * flightTimeSeconds * flightTimeSeconds;
@@ -106,14 +112,14 @@ class ThrowService {
     processNewEvent(firstAcceleration, lastAcceleration, acceleration);
   }
 
-   _beginThrow() {
+  _beginThrow() {
     // stop collecting accelerometer events
     if (_subscription != null) {
       throw Exception("Already collecting data.");
     }
     // start collecting accelerometer events
     _subscription = _stream.listen(
-      (UserAccelerometerEvent event) {
+          (UserAccelerometerEvent event) {
         // print(
         //     "${event.timestamp.millisecondsSinceEpoch},${event.x},${event.y},${event.z}");
         processData(event);
@@ -134,6 +140,8 @@ class ThrowService {
   }
 
   void setReleaseTimestamp() {
-    _releaseTimestamp = DateTime.now().millisecondsSinceEpoch;
+    _releaseTimestamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
   }
 }
