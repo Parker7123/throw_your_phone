@@ -9,7 +9,6 @@ class ThrowInstructionsDialog extends StatefulWidget {
 }
 
 class _ThrowInstructionsDialogState extends State<ThrowInstructionsDialog> {
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

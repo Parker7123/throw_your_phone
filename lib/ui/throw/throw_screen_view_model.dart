@@ -2,14 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:throw_your_phone/data/repositories/throw_repository.dart';
-import 'package:throw_your_phone/data/services/throw_service.dart';
+import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 
 class ThrowScreenViewModel extends ChangeNotifier {
-  ThrowScreenViewModel({required ThrowRepository throwRepository})
-      : _throwRepository = throwRepository;
+  ThrowScreenViewModel(
+      {required ThrowRepository throwRepository,
+      required IThrowService throwService})
+      : _throwRepository = throwRepository,
+        _throwService = throwService;
 
-  final ThrowService throwService = ThrowService();
+  final IThrowService _throwService;
   final ThrowRepository _throwRepository;
   ThrowEntry? throwEntry;
   bool throwInProgress = false;
@@ -26,7 +29,7 @@ class ThrowScreenViewModel extends ChangeNotifier {
   beginVerticalThrow() {
     throwInProgress = true;
     notifyListeners();
-    throwService.beginVerticalThrow().then(
+    _throwService.beginVerticalThrow().then(
       (value) async {
         throwEntry = await _throwRepository.addThrow(ThrowEntry(0, value));
         throwInProgress = false;
@@ -36,13 +39,13 @@ class ThrowScreenViewModel extends ChangeNotifier {
   }
 
   Future reset() async {
-    await throwService.reset();
+    await _throwService.reset();
     throwInProgress = false;
     throwEntry = null;
     notifyListeners();
   }
 
   void setReleaseTimestamp() {
-    throwService.setReleaseTimestamp();
+    _throwService.setReleaseTimestamp();
   }
 }

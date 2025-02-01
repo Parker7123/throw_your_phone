@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class StartEndDetector {
   final double threshold;
   final double endThreshold;
@@ -30,11 +32,15 @@ class StartEndDetector {
     _noFluctuationsCounter = 0;
     if (start != null && x > endThreshold) {
       end = _i;
-      print("end: $_i");
+      if (kDebugMode) {
+        print("end: $_i");
+      }
     }
     if (start == null && x > endThreshold) {
       earlyEnd = _i;
-      print("early end: $_i");
+      if (kDebugMode) {
+        print("early end: $_i");
+      }
     }
   }
 
@@ -49,7 +55,9 @@ class StartEndDetector {
 
     if (_shouldSetStart(t)) {
       start = _noFluctuationsStartI;
-      print("start: $start");
+      if (kDebugMode) {
+        print("start: $start");
+      }
     }
   }
 

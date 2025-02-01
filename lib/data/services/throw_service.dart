@@ -3,16 +3,17 @@ import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:throw_your_phone/data/services/acceleration.dart';
+import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 
-import 'change_detector.dart';
+import 'start_end_detector.dart';
 
-class ThrowService {
-  Completer<double> _completer = new Completer();
+class ThrowService implements IThrowService {
+  Completer<double> _completer = Completer();
   final _stream = userAccelerometerEventStream(
       samplingPeriod: const Duration(milliseconds: 1));
   StreamSubscription<UserAccelerometerEvent>? _subscription;
   StartEndDetector startEndDetector =
-  StartEndDetector(threshold: 0.5, endThreshold: 10);
+      StartEndDetector(threshold: 0.5, endThreshold: 10);
   List<Acceleration> _accelerationData = [];
   int? _releaseTimestamp;
   bool _done = false;
@@ -28,7 +29,8 @@ class ThrowService {
     return !_done;
   }
 
-  Future reset() async {
+  @override
+  Future<void> reset() async {
     await _subscription?.cancel();
     _subscription = null;
     startEndDetector = StartEndDetector(threshold: 0.5, endThreshold: 10);
@@ -38,12 +40,12 @@ class ThrowService {
     _firstEventSkipped = false;
   }
 
-  processNewEvent(Acceleration firstEvent, Acceleration lastEvent,
-      Acceleration event) {
+  processNewEvent(
+      Acceleration firstEvent, Acceleration lastEvent, Acceleration event) {
     var t = event.timestamp - firstEvent.timestamp;
 
     var aLast =
-    sqrt(pow(lastEvent.x, 2) + pow(lastEvent.y, 2) + pow(lastEvent.z, 2));
+        sqrt(pow(lastEvent.x, 2) + pow(lastEvent.y, 2) + pow(lastEvent.z, 2));
     var a = sqrt(pow(event.x, 2) + pow(event.y, 2) + pow(event.z, 2));
 
     var da = (a - aLast).abs();
@@ -119,7 +121,7 @@ class ThrowService {
     }
     // start collecting accelerometer events
     _subscription = _stream.listen(
-          (UserAccelerometerEvent event) {
+      (UserAccelerometerEvent event) {
         // print(
         //     "${event.timestamp.millisecondsSinceEpoch},${event.x},${event.y},${event.z}");
         processData(event);
@@ -131,17 +133,18 @@ class ThrowService {
     );
   }
 
+  @override
   void beginHorizontalThrow() {}
 
+  @override
   Future<double> beginVerticalThrow() {
     _beginThrow();
-    _completer = new Completer();
+    _completer = Completer();
     return _completer.future;
   }
 
+  @override
   void setReleaseTimestamp() {
-    _releaseTimestamp = DateTime
-        .now()
-        .millisecondsSinceEpoch;
+    _releaseTimestamp = DateTime.now().millisecondsSinceEpoch;
   }
 }

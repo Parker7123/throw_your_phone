@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:throw_your_phone/data/repositories/throw_repository.dart';
+import 'package:throw_your_phone/data/services/throw_service.dart';
+import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 import 'package:throw_your_phone/ui/history/history_screen.dart';
 import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
 import 'package:throw_your_phone/ui/home/home_screen.dart';
@@ -10,7 +12,8 @@ void main() {
   runApp(MultiProvider(providers: [
     Provider(
       create: (context) => InMemoryThrowRepository() as ThrowRepository,
-    )
+    ),
+    Provider(create: (context) => ThrowService() as IThrowService)
   ], child: const MyApp()));
 }
 

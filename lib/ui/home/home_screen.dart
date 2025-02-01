@@ -33,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                             builder: (context) => ThrowScreen(
                                   viewModel: ThrowScreenViewModel(
-                                      throwRepository: context.read()),
+                                      throwRepository: context.read(),
+                                      throwService: context.read()),
                                 )));
                   },
                   style: ElevatedButton.styleFrom(

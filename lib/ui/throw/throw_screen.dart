@@ -63,14 +63,14 @@ class _ThrowScreenState extends State<ThrowScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Throw statistics"),
+                        const Text("Throw statistics"),
                         Container(height: 2),
                         Container(
                           height: 100,
                           width: 200,
                           decoration: BoxDecoration(
-                            border: Border.all(width: 2.0, color: Colors.black)
-                          ),
+                              border:
+                                  Border.all(width: 2.0, color: Colors.black)),
                           child: Center(
                             child: Text(
                                 "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
@@ -114,7 +114,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                             shape: BoxShape.circle,
                             color: buttonColor,
                           ),
-                          child: Center(child: Text("Hold and throw")),
+                          child: const Center(child: Text("Hold and throw")),
                         ),
                       )),
                     )
