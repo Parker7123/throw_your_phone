@@ -47,6 +47,9 @@ class HorizontalThrowProcessor implements ThrowProcessor {
   @override
   double calculateDistance(List<Acceleration> data, int start, int end,
       int? releaseTimestamp) {
+    if (end > 0) {
+      end = end - 1;
+    }
     var startEvent = data[start];
     var endEvent = data[end];
     var startTimestamp = releaseTimestamp != null

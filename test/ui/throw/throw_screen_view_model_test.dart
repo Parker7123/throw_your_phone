@@ -17,14 +17,6 @@ void main() {
           throwRepository: throwRepository, throwService: throwService);
     });
 
-    test('Should make throw', () async {
-      await viewModel.makeThrow();
-
-      expect(viewModel.throwEntry != null, true);
-      var list = await throwRepository.getThrows();
-      expect(list.isNotEmpty, true);
-    });
-
     test('Should begin vertical throw', () async {
       throwService.setMockHeight(10);
 

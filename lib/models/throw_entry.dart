@@ -1,8 +1,8 @@
 class ThrowEntry {
   double distance, height;
-  ThrowEntry(this.distance, this.height);
+  ThrowType throwType;
+
+  ThrowEntry(this.distance, this.height, this.throwType);
 }
 
-enum ThrowType {
-  horizontal, vertical
-}
+enum ThrowType { horizontal, vertical }

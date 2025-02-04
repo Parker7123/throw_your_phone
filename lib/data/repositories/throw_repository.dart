@@ -5,6 +5,10 @@ abstract class ThrowRepository {
 
   Future<List<ThrowEntry>> getThrows();
 
+  Future<List<ThrowEntry>> getVerticalThrows();
+
+  Future<List<ThrowEntry>> getHorizontalThrows();
+
   Future<ThrowEntry> addThrow(ThrowEntry throwEntry);
 
   Future remove(ThrowEntry throwEntry);
@@ -12,7 +16,7 @@ abstract class ThrowRepository {
 
 class InMemoryThrowRepository extends ThrowRepository {
   final _throws =
-      List.generate(3, (i) => ThrowEntry(i.toDouble(), i.toDouble()));
+      List.generate(3, (i) => ThrowEntry(i.toDouble(), i.toDouble(), ThrowType.vertical));
 
   @override
   Future<ThrowEntry> addThrow(ThrowEntry throwEntry) {
@@ -35,5 +39,15 @@ class InMemoryThrowRepository extends ThrowRepository {
   Future remove(ThrowEntry throwEntry) {
     _throws.remove(throwEntry);
     return Future.value();
+  }
+
+  @override
+  Future<List<ThrowEntry>> getHorizontalThrows() {
+    return Future.value(_throws.where((t) => t.throwType == ThrowType.horizontal).toList());
+  }
+
+  @override
+  Future<List<ThrowEntry>> getVerticalThrows() {
+    return Future.value(_throws.where((t) => t.throwType == ThrowType.vertical).toList());
   }
 }
