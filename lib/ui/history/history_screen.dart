@@ -5,6 +5,8 @@ import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
 
 enum SortCriteria { distance, height, date }
 
+enum Actions { delete, addToRanking }
+
 class SortWindow extends StatelessWidget {
   const SortWindow(
       {super.key,
@@ -118,7 +120,16 @@ class HistoryScreen extends StatelessWidget {
                 return ListenableBuilder(
                     listenable: viewModel,
                     builder: (context, _) {
-                      return HistoryList(throwEntries: viewModel.throwEntries);
+                      if (viewModel.throwEntries.isEmpty) {
+                        return Center(child: Text("History is empty."));
+                      }
+                      return HistoryList(
+                        throwEntries: viewModel.throwEntries,
+                        delete: (entry) {
+                          viewModel.delete(entry);
+                        },
+                        addToGlobalRanking: (entry) {},
+                      );
                     });
               } else {
                 return const Center(child: CircularProgressIndicator());
@@ -128,15 +139,38 @@ class HistoryScreen extends StatelessWidget {
 }
 
 class HistoryList extends StatelessWidget {
-  const HistoryList({super.key, required this.throwEntries});
+  const HistoryList(
+      {super.key,
+      required this.throwEntries,
+      required this.delete,
+      required this.addToGlobalRanking});
 
   final List<ThrowEntry> throwEntries;
+  final Function(ThrowEntry) delete;
+  final Function(ThrowEntry) addToGlobalRanking;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: throwEntries
           .map((throwEntry) => ListTile(
+                trailing: PopupMenuButton<Actions>(
+                  onSelected: (Actions action) {
+                    switch (action) {
+                      case Actions.delete:
+                        delete(throwEntry);
+                      case Actions.addToRanking:
+                        addToGlobalRanking(throwEntry);
+                    }
+                  },
+                  itemBuilder: (context) => <PopupMenuEntry<Actions>>[
+                    const PopupMenuItem<Actions>(
+                        value: Actions.delete, child: Text("Delete")),
+                    const PopupMenuItem<Actions>(
+                        value: Actions.addToRanking,
+                        child: Text("Add to ranking"))
+                  ],
+                ),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

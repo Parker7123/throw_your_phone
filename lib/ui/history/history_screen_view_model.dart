@@ -52,4 +52,10 @@ class HistoryScreenViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void delete(ThrowEntry throwEntry) async {
+    await _throwRepository.remove(throwEntry);
+    throwEntries.remove(throwEntry);
+    notifyListeners();
+  }
 }
