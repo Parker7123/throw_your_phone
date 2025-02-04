@@ -43,7 +43,8 @@ class _ThrowScreenState extends State<ThrowScreen> {
             builder: (context, _) {
               return Column(
                 children: [
-                  if (widget.viewModel.throwEntry != null) ...[
+                  if (widget.viewModel.throwState == ThrowState.done ||
+                      widget.viewModel.throwState == ThrowState.saved) ...[
                     Expanded(
                         child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +54,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                         Container(height: 2),
                         Container(
                           height: 100,
-                          width: 200,
+                          width: 250,
                           decoration: BoxDecoration(
                               border:
                                   Border.all(width: 2.0, color: Colors.black)),
@@ -68,15 +69,35 @@ class _ThrowScreenState extends State<ThrowScreen> {
                           ),
                         ),
                         Container(height: 50),
-                        ElevatedButton(
-                            onPressed: () async {
-                              await widget.viewModel.reset();
-                            },
-                            child: const Text("Retry"))
+                        SizedBox(
+                          width: 250,
+                          child: Row(
+                            mainAxisAlignment:
+                                widget.viewModel.throwState == ThrowState.saved
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (widget.viewModel.throwState !=
+                                  ThrowState.saved) ...[
+                                TextButton.icon(
+                                    icon: const Icon(Icons.save),
+                                    onPressed: () async {
+                                      await widget.viewModel.saveThrow();
+                                    },
+                                    label: const Text("Save to history")),
+                              ],
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    await widget.viewModel.reset();
+                                  },
+                                  child: const Text("Retry")),
+                            ],
+                          ),
+                        )
                       ],
                     ))
                   ] else if (_buttonColor == Colors.red &&
-                      widget.viewModel.throwInProgress) ...[
+                      widget.viewModel.throwState == ThrowState.inProgress) ...[
                     const Expanded(
                         child: Center(child: CircularProgressIndicator()))
                   ] else ...[

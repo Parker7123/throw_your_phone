@@ -5,6 +5,10 @@ import 'package:throw_your_phone/data/repositories/throw_repository.dart';
 import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 
+enum ThrowState {
+  init, inProgress, done, saved
+}
+
 class ThrowScreenViewModel extends ChangeNotifier {
   ThrowScreenViewModel(
       {required ThrowRepository throwRepository,
@@ -15,16 +19,16 @@ class ThrowScreenViewModel extends ChangeNotifier {
   final IThrowService _throwService;
   final ThrowRepository _throwRepository;
   ThrowEntry? throwEntry;
-  bool throwInProgress = false;
+  ThrowState throwState = ThrowState.init;
   Random random = Random();
 
   beginThrow() {
-    throwInProgress = true;
+    throwState = ThrowState.inProgress;
     notifyListeners();
     _throwService.beginThrow().then(
       (value) async {
-        throwEntry = await _throwRepository.addThrow(value);
-        throwInProgress = false;
+        throwEntry = value;
+        throwState = ThrowState.done;
         notifyListeners();
       },
     );
@@ -32,9 +36,17 @@ class ThrowScreenViewModel extends ChangeNotifier {
 
   Future reset() async {
     await _throwService.reset();
-    throwInProgress = false;
+    throwState = ThrowState.init;
     throwEntry = null;
     notifyListeners();
+  }
+
+  Future<void> saveThrow() async {
+    if (throwEntry != null) {
+      await _throwRepository.addThrow(throwEntry!);
+      throwState = ThrowState.saved;
+      notifyListeners();
+    }
   }
 
   void setReleaseTimestamp() {
