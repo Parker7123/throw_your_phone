@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f8f9fa"/>
+
+  <!-- Arrow line and head as direct shapes -->
+  <g fill="#2563eb">
+    <!-- Main arrow line -->
+    <line x1="200" y1="280" x2="200" y2="120"
+          stroke="#2563eb" stroke-width="3"/>
+    <!-- Arrow head -->
+    <polygon points="200,116 195,135 205,135"
+             fill="#2563eb"/>
+  </g>
+
+  <!-- Hand -->
+  <path d="M 160 300 C 180 290, 190 290, 200 290 C 210 290, 220 290, 240 300
+           L 240 340 C 220 350, 180 350, 160 340 Z"
+        fill="#fcd34d"/>
+  <path d="M 180 340 L 180 360 C 200 365, 220 365, 240 360 L 240 340"
+        fill="#fcd34d"/>
+
+  <!-- Phone -->
+  <rect x="180" y="240" width="40" height="70" rx="5"
+        fill="#1f2937"/>
+  <rect x="185" y="245" width="30" height="55" rx="2"
+        fill="#e5e7eb"/>
+  <circle cx="200" cy="305" r="3"
+          fill="#4b5563"/>
+
+  <!-- Label -->
+  <text x="220" y="180"
+        font-family="Arial" font-size="14"
+        fill="#1f2937">
+    Throw straight up
+  </text>
+</svg>

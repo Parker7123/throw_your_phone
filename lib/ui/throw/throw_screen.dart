@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:throw_your_phone/models/throw_entry.dart';
 import 'package:throw_your_phone/ui/throw/throw_instructions_dialog.dart';
 import 'package:throw_your_phone/ui/throw/throw_screen_view_model.dart';
 
@@ -15,6 +16,7 @@ class ThrowScreen extends StatefulWidget {
 
 class _ThrowScreenState extends State<ThrowScreen> {
   var buttonColor = Colors.red;
+  var throwType = ThrowType.vertical;
 
   void processThrowButtonTouch() {
     widget.viewModel.beginVerticalThrow();
@@ -43,20 +45,6 @@ class _ThrowScreenState extends State<ThrowScreen> {
             builder: (context, _) {
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton.icon(
-                          label: const Text("Instructions"),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (builderContext) =>
-                                    const ThrowInstructionsDialog());
-                          },
-                          icon: const Icon(Icons.info_outline)),
-                    ],
-                  ),
                   if (widget.viewModel.throwEntry != null) ...[
                     Expanded(
                         child: Column(
@@ -86,8 +74,40 @@ class _ThrowScreenState extends State<ThrowScreen> {
                     ))
                   ] else if (buttonColor == Colors.red &&
                       widget.viewModel.throwInProgress) ...[
-                    const CircularProgressIndicator()
+                    const Expanded(child: Center(child: CircularProgressIndicator()))
                   ] else ...[
+                    SegmentedButton(
+                      segments: const <ButtonSegment<ThrowType>>[
+                        ButtonSegment<ThrowType>(
+                            value: ThrowType.vertical,
+                            label: Text('Vertical'),
+                            icon: Icon(Icons.arrow_upward)),
+                        ButtonSegment<ThrowType>(
+                            value: ThrowType.horizontal,
+                            label: Text('Horizontal'),
+                            icon: Icon(Icons.arrow_forward)),
+                      ],
+                      selected: <ThrowType>{throwType},
+                      onSelectionChanged: (Set<ThrowType> newSelection) {
+                        setState(() {
+                          throwType = newSelection.first;
+                        });
+                      },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton.icon(
+                            label: const Text("Instructions"),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (builderContext) =>
+                                  const ThrowInstructionsDialog());
+                            },
+                            icon: const Icon(Icons.info_outline)),
+                      ],
+                    ),
                     Expanded(
                       flex: 1,
                       child: Center(
