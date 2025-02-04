@@ -1,6 +1,7 @@
+import 'package:throw_your_phone/models/throw_entry.dart';
+
 abstract class IThrowService {
-  Future<double> beginVerticalThrow();
-  Future<double> beginHorizontalThrow();
+  Future<ThrowEntry> beginThrow();
   void setReleaseTimestamp();
   Future<void> reset();
 }

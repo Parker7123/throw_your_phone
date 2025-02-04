@@ -1,7 +1,9 @@
 import 'package:throw_your_phone/data/services/throw_service_interface.dart';
+import 'package:throw_your_phone/models/throw_entry.dart';
 
 class MockThrowService implements IThrowService {
   double _heightToReturn = 1.5; // Default mock height
+  final double _distanceToRetuen = 2.5; // Default mock height
   bool _isCollectingData = false;
 
   void setMockHeight(double height) {
@@ -9,21 +11,12 @@ class MockThrowService implements IThrowService {
   }
 
   @override
-  Future<double> beginVerticalThrow() async {
+  Future<ThrowEntry> beginThrow() async {
     if (_isCollectingData) {
       throw Exception("Already collecting data.");
     }
     _isCollectingData = true;
-    return _heightToReturn;
-  }
-
-  @override
-  Future<double> beginHorizontalThrow() async {
-    if (_isCollectingData) {
-      throw Exception("Already collecting data.");
-    }
-    _isCollectingData = true;
-    return _heightToReturn;
+    return ThrowEntry(_distanceToRetuen, _heightToReturn);
   }
 
   @override

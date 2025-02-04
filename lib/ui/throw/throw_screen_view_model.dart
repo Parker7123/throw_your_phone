@@ -18,24 +18,12 @@ class ThrowScreenViewModel extends ChangeNotifier {
   bool throwInProgress = false;
   Random random = Random();
 
-  beginVerticalThrow() {
+  beginThrow() {
     throwInProgress = true;
     notifyListeners();
-    _throwService.beginVerticalThrow().then(
+    _throwService.beginThrow().then(
       (value) async {
-        throwEntry = await _throwRepository.addThrow(ThrowEntry(0, value, ThrowType.vertical));
-        throwInProgress = false;
-        notifyListeners();
-      },
-    );
-  }
-
-  beginHorizontalThrow() {
-    throwInProgress = true;
-    notifyListeners();
-    _throwService.beginHorizontalThrow().then(
-          (value) async {
-        throwEntry = await _throwRepository.addThrow(ThrowEntry(0, value, ThrowType.horizontal));
+        throwEntry = await _throwRepository.addThrow(value);
         throwInProgress = false;
         notifyListeners();
       },

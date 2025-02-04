@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:throw_your_phone/models/throw_entry.dart';
 import 'package:throw_your_phone/ui/throw/throw_instructions_dialog.dart';
 import 'package:throw_your_phone/ui/throw/throw_screen_view_model.dart';
 
@@ -16,14 +15,9 @@ class ThrowScreen extends StatefulWidget {
 
 class _ThrowScreenState extends State<ThrowScreen> {
   var _buttonColor = Colors.red;
-  var _throwType = ThrowType.vertical;
 
   void processThrowButtonTouch() {
-    if (_throwType == ThrowType.vertical) {
-      widget.viewModel.beginVerticalThrow();
-    } else {
-      widget.viewModel.beginHorizontalThrow();
-    }
+    widget.viewModel.beginThrow();
   }
 
   @override
@@ -63,9 +57,14 @@ class _ThrowScreenState extends State<ThrowScreen> {
                           decoration: BoxDecoration(
                               border:
                                   Border.all(width: 2.0, color: Colors.black)),
-                          child: Center(
-                            child: Text(
-                                "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                  "Height: ${widget.viewModel.throwEntry?.height.toStringAsFixed(2)}m"),
+                              Text(
+                                  "Total distance: ${widget.viewModel.throwEntry?.distance.toStringAsFixed(2)}m"),
+                            ],
                           ),
                         ),
                         Container(height: 50),
@@ -78,26 +77,9 @@ class _ThrowScreenState extends State<ThrowScreen> {
                     ))
                   ] else if (_buttonColor == Colors.red &&
                       widget.viewModel.throwInProgress) ...[
-                    const Expanded(child: Center(child: CircularProgressIndicator()))
+                    const Expanded(
+                        child: Center(child: CircularProgressIndicator()))
                   ] else ...[
-                    SegmentedButton(
-                      segments: const <ButtonSegment<ThrowType>>[
-                        ButtonSegment<ThrowType>(
-                            value: ThrowType.vertical,
-                            label: Text('Vertical'),
-                            icon: Icon(Icons.arrow_upward)),
-                        ButtonSegment<ThrowType>(
-                            value: ThrowType.horizontal,
-                            label: Text('Horizontal'),
-                            icon: Icon(Icons.arrow_forward)),
-                      ],
-                      selected: <ThrowType>{_throwType},
-                      onSelectionChanged: (Set<ThrowType> newSelection) {
-                        setState(() {
-                          _throwType = newSelection.first;
-                        });
-                      },
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -107,7 +89,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                               showDialog(
                                   context: context,
                                   builder: (builderContext) =>
-                                  const ThrowInstructionsDialog());
+                                      const ThrowInstructionsDialog());
                             },
                             icon: const Icon(Icons.info_outline)),
                       ],

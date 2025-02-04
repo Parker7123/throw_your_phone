@@ -20,7 +20,7 @@ class HistoryScreen extends StatelessWidget {
                 return ListenableBuilder(
                     listenable: viewModel,
                     builder: (context, _) {
-                      return HistoryList(throwEntries: viewModel.verticalThrows);
+                      return HistoryList(throwEntries: viewModel.throwEntries);
                     });
               } else {
                 return const CircularProgressIndicator();
@@ -36,23 +36,13 @@ class HistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          appBar: AppBar(
-            bottom: const TabBar(tabs: [
-              Tab(icon: Icon(Icons.running_with_errors), text: "Vertical throws"),
-              Tab(icon: Icon(Icons.ad_units), text: "Horizontal throws"),
-            ]),
-          ),
-          body: TabBarView(
-            children: throwEntries
-                .map((throwEntry) => ListTile(
-                      title: const Text("Throw #"),
-                      subtitle: Text("Distance: ${throwEntry.distance} m"),
-                    ))
-                .toList(),
-          )),
+    return ListView(
+      children: throwEntries
+          .map((throwEntry) => ListTile(
+                title: const Text("Throw #"),
+                subtitle: Text("Distance: ${throwEntry.distance} m"),
+              ))
+          .toList(),
     );
   }
 }

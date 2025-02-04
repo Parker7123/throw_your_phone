@@ -10,13 +10,10 @@ import '../../models/throw_entry.dart';
 import 'start_end_detector.dart';
 
 class ThrowService implements IThrowService {
-  final Map<ThrowType, ThrowProcessor> _processors = {
-    ThrowType.vertical: VerticalThrowProcessor(),
-    ThrowType.horizontal: HorizontalThrowProcessor(),
-  };
-  late ThrowType _currentThrowType;
+  var verticalThrowProcessor = VerticalThrowProcessor();
+  var horizontalThrowProcessor = HorizontalThrowProcessor();
 
-  Completer<double> _completer = Completer();
+  Completer<ThrowEntry> _completer = Completer();
   final _stream = userAccelerometerEventStream(
       samplingPeriod: const Duration(milliseconds: 1));
   StreamSubscription<UserAccelerometerEvent>? _subscription;
@@ -83,13 +80,11 @@ class ThrowService implements IThrowService {
 
   void processStartStopEvents(int start, int end) {
     _stopCollectingData();
-    var distance = _processors[_currentThrowType]!.calculateDistance(
-        _accelerationData,
-        start,
-        end,
-        _releaseTimestamp
-    );
-    _completer.complete(distance);
+    var height = verticalThrowProcessor.calculateDistance(
+        _accelerationData, start, end, _releaseTimestamp);
+    var distance = horizontalThrowProcessor.calculateDistance(
+        _accelerationData, start, end, _releaseTimestamp);
+    _completer.complete(ThrowEntry(distance, height));
   }
 
   void processData(UserAccelerometerEvent event) {
@@ -138,16 +133,7 @@ class ThrowService implements IThrowService {
   }
 
   @override
-  Future<double> beginHorizontalThrow() {
-    _currentThrowType = ThrowType.horizontal;
-    _beginThrow();
-    _completer = Completer();
-    return _completer.future;
-  }
-
-  @override
-  Future<double> beginVerticalThrow() {
-    _currentThrowType = ThrowType.vertical;
+  Future<ThrowEntry> beginThrow() {
     _beginThrow();
     _completer = Completer();
     return _completer.future;

@@ -11,15 +11,13 @@ class HistoryScreenViewModel extends ChangeNotifier {
 
   final ThrowRepository _throwRepository;
 
-  List<ThrowEntry> verticalThrows = [];
-  List<ThrowEntry> horizontalThrows = [];
+  List<ThrowEntry> throwEntries = [];
 
   Future? load;
 
   Future _load() async {
     await Future.delayed(const Duration(milliseconds: 300));
-    verticalThrows = await _throwRepository.getThrows();
-    horizontalThrows = await _throwRepository.getThrows();
+    throwEntries = await _throwRepository.getThrows();
     notifyListeners();
   }
 }

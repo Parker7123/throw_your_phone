@@ -20,7 +20,7 @@ void main() {
     test('Should begin vertical throw', () async {
       throwService.setMockHeight(10);
 
-      await viewModel.beginVerticalThrow();
+      await viewModel.beginThrow();
       await Future.delayed(const Duration(seconds: 1));
 
       expect(viewModel.throwEntry != null, true);

@@ -20,7 +20,6 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      debugDumpApp();
       final tileFinder = find.textContaining(RegExp('Throw #.*'));
 
       expect(tileFinder, findsWidgets);
