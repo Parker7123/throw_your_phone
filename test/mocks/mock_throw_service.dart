@@ -18,8 +18,12 @@ class MockThrowService implements IThrowService {
   }
 
   @override
-  void beginHorizontalThrow() {
-    // Mock implementation
+  Future<double> beginHorizontalThrow() async {
+    if (_isCollectingData) {
+      throw Exception("Already collecting data.");
+    }
+    _isCollectingData = true;
+    return _heightToReturn;
   }
 
   @override

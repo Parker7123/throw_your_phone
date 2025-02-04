@@ -15,11 +15,15 @@ class ThrowScreen extends StatefulWidget {
 }
 
 class _ThrowScreenState extends State<ThrowScreen> {
-  var buttonColor = Colors.red;
-  var throwType = ThrowType.vertical;
+  var _buttonColor = Colors.red;
+  var _throwType = ThrowType.vertical;
 
   void processThrowButtonTouch() {
-    widget.viewModel.beginVerticalThrow();
+    if (_throwType == ThrowType.vertical) {
+      widget.viewModel.beginVerticalThrow();
+    } else {
+      widget.viewModel.beginHorizontalThrow();
+    }
   }
 
   @override
@@ -72,7 +76,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                             child: const Text("Retry"))
                       ],
                     ))
-                  ] else if (buttonColor == Colors.red &&
+                  ] else if (_buttonColor == Colors.red &&
                       widget.viewModel.throwInProgress) ...[
                     const Expanded(child: Center(child: CircularProgressIndicator()))
                   ] else ...[
@@ -87,10 +91,10 @@ class _ThrowScreenState extends State<ThrowScreen> {
                             label: Text('Horizontal'),
                             icon: Icon(Icons.arrow_forward)),
                       ],
-                      selected: <ThrowType>{throwType},
+                      selected: <ThrowType>{_throwType},
                       onSelectionChanged: (Set<ThrowType> newSelection) {
                         setState(() {
-                          throwType = newSelection.first;
+                          _throwType = newSelection.first;
                         });
                       },
                     ),
@@ -114,7 +118,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                           child: Listener(
                         onPointerDown: (details) {
                           setState(() {
-                            buttonColor = Colors.green;
+                            _buttonColor = Colors.green;
                           });
                           if (!Platform.isAndroid) {
                             return;
@@ -124,7 +128,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                         onPointerUp: (details) {
                           widget.viewModel.setReleaseTimestamp();
                           setState(() {
-                            buttonColor = Colors.red;
+                            _buttonColor = Colors.red;
                           });
                         },
                         child: Container(
@@ -132,7 +136,7 @@ class _ThrowScreenState extends State<ThrowScreen> {
                           height: 200,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: buttonColor,
+                            color: _buttonColor,
                           ),
                           child: const Center(child: Text("Hold and throw")),
                         ),

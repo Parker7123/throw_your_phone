@@ -38,6 +38,18 @@ class ThrowScreenViewModel extends ChangeNotifier {
     );
   }
 
+  beginHorizontalThrow() {
+    throwInProgress = true;
+    notifyListeners();
+    _throwService.beginHorizontalThrow().then(
+          (value) async {
+        throwEntry = await _throwRepository.addThrow(ThrowEntry(0, value));
+        throwInProgress = false;
+        notifyListeners();
+      },
+    );
+  }
+
   Future reset() async {
     await _throwService.reset();
     throwInProgress = false;

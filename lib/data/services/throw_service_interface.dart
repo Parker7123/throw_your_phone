@@ -1,6 +1,6 @@
 abstract class IThrowService {
   Future<double> beginVerticalThrow();
-  void beginHorizontalThrow();
+  Future<double> beginHorizontalThrow();
   void setReleaseTimestamp();
   Future<void> reset();
 }

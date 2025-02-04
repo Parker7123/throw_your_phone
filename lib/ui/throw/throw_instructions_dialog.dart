@@ -82,7 +82,7 @@ class _ThrowInstructionsDialogState extends State<ThrowInstructionsDialog> {
                     ),
                     child: const Center(child: Text("Hold and throw")),
                   ),
-                  Icon(Icons.navigate_next_rounded),
+                  const Icon(Icons.navigate_next_rounded),
                   Container(
                     width: 100,
                     height: 100,

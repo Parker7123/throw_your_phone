@@ -3,11 +3,19 @@ import 'dart:math';
 
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:throw_your_phone/data/services/acceleration.dart';
+import 'package:throw_your_phone/data/services/throw_processor.dart';
 import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 
+import '../../models/throw_entry.dart';
 import 'start_end_detector.dart';
 
 class ThrowService implements IThrowService {
+  final Map<ThrowType, ThrowProcessor> _processors = {
+    ThrowType.vertical: VerticalThrowProcessor(),
+    ThrowType.horizontal: HorizontalThrowProcessor(),
+  };
+  late ThrowType _currentThrowType;
+
   Completer<double> _completer = Completer();
   final _stream = userAccelerometerEventStream(
       samplingPeriod: const Duration(milliseconds: 1));
@@ -75,17 +83,13 @@ class ThrowService implements IThrowService {
 
   void processStartStopEvents(int start, int end) {
     _stopCollectingData();
-
-    var startEvent = _accelerationData[start];
-    var endEvent = _accelerationData[end];
-
-    var startTimestamp = _releaseTimestamp != null
-        ? max(startEvent.timestamp, _releaseTimestamp!)
-        : startEvent.timestamp;
-    var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
-
-    var heightMeters = 1 / 8 * 9.81 * flightTimeSeconds * flightTimeSeconds;
-    _completer.complete(heightMeters);
+    var distance = _processors[_currentThrowType]!.calculateDistance(
+        _accelerationData,
+        start,
+        end,
+        _releaseTimestamp
+    );
+    _completer.complete(distance);
   }
 
   void processData(UserAccelerometerEvent event) {
@@ -134,10 +138,16 @@ class ThrowService implements IThrowService {
   }
 
   @override
-  void beginHorizontalThrow() {}
+  Future<double> beginHorizontalThrow() {
+    _currentThrowType = ThrowType.horizontal;
+    _beginThrow();
+    _completer = Completer();
+    return _completer.future;
+  }
 
   @override
   Future<double> beginVerticalThrow() {
+    _currentThrowType = ThrowType.vertical;
     _beginThrow();
     _completer = Completer();
     return _completer.future;
