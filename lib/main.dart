@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:throw_your_phone/data/repositories/sql_throw_repository.dart';
 import 'package:throw_your_phone/data/repositories/throw_repository.dart';
 import 'package:throw_your_phone/data/services/throw_service.dart';
 import 'package:throw_your_phone/data/services/throw_service_interface.dart';
@@ -11,7 +12,7 @@ import 'package:throw_your_phone/ui/ranking/ranking_screean.dart';
 void main() {
   runApp(MultiProvider(providers: [
     Provider(
-      create: (context) => InMemoryThrowRepository() as ThrowRepository,
+      create: (context) => SQLThrowRepository() as ThrowRepository,
     ),
     Provider(create: (context) => ThrowService() as IThrowService)
   ], child: const MyApp()));

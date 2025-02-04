@@ -1,6 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
+
+enum SortCriteria { distance, height, date }
+
+class SortWindow extends StatelessWidget {
+  const SortWindow(
+      {super.key,
+      required this.currentSort,
+      required this.ascending,
+      required this.onSort});
+
+  final SortCriteria currentSort;
+  final bool ascending;
+  final Function(SortCriteria) onSort;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 300,
+        padding: EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Sort by",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.straighten),
+                    title: Text('Distance'),
+                    onTap: () {
+                      onSort(SortCriteria.distance);
+                      Navigator.pop(context);
+                    },
+                    trailing: currentSort == SortCriteria.distance
+                        ? (ascending
+                            ? const Icon(Icons.arrow_upward_rounded)
+                            : const Icon(Icons.arrow_downward_rounded))
+                        : null,
+                    selected: currentSort == SortCriteria.distance,
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.height),
+                    onTap: () {
+                      onSort(SortCriteria.height);
+                      Navigator.pop(context);
+                    },
+                    trailing: currentSort == SortCriteria.height
+                        ? (ascending
+                            ? const Icon(Icons.arrow_upward_rounded)
+                            : const Icon(Icons.arrow_downward_rounded))
+                        : null,
+                    title: Text('Height'),
+                    selected: currentSort == SortCriteria.height,
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.calendar_today),
+                    title: Text('Date'),
+                    onTap: () {
+                      onSort(SortCriteria.date);
+                      Navigator.pop(context);
+                    },
+                    trailing: currentSort == SortCriteria.date
+                        ? (ascending
+                            ? const Icon(Icons.arrow_upward_rounded)
+                            : const Icon(Icons.arrow_downward_rounded))
+                        : null,
+                    // Disable until implemented
+                    selected: currentSort == SortCriteria.date,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+}
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key, required this.viewModel});
@@ -10,6 +90,24 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Text('Throw History'),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.sort),
+                padding: EdgeInsets.all(20),
+                onPressed: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SortWindow(
+                            currentSort: viewModel.currentSort,
+                            ascending: viewModel.ascending,
+                            onSort: viewModel.sortBy);
+                      });
+                })
+          ],
+        ),
         body: FutureBuilder(
             future: viewModel.load,
             builder: (context, snapshot) {
@@ -23,7 +121,7 @@ class HistoryScreen extends StatelessWidget {
                       return HistoryList(throwEntries: viewModel.throwEntries);
                     });
               } else {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               }
             }));
   }
@@ -39,8 +137,36 @@ class HistoryList extends StatelessWidget {
     return ListView(
       children: throwEntries
           .map((throwEntry) => ListTile(
-                title: const Text("Throw #"),
-                subtitle: Text("Distance: ${throwEntry.distance} m"),
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.height_rounded),
+                    Text("${throwEntry.distance.toStringAsFixed(2)} m"),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Icon(Icons.straighten_rounded),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text("${throwEntry.height.toStringAsFixed(2)} m"),
+                  ],
+                ),
+                subtitle: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 1.0),
+                      child: Icon(
+                        Icons.calendar_month_rounded,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 7,
+                    ),
+                    Text(DateFormat("yyyy/MM/dd HH:mm")
+                        .format(throwEntry.dateTime)),
+                  ],
+                ),
               ))
           .toList(),
     );

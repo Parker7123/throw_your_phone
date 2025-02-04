@@ -16,7 +16,8 @@ class MockThrowService implements IThrowService {
       throw Exception("Already collecting data.");
     }
     _isCollectingData = true;
-    return ThrowEntry(_distanceToRetuen, _heightToReturn);
+    return ThrowEntry(
+        id: 0, distance: _distanceToRetuen, height: _heightToReturn);
   }
 
   @override
