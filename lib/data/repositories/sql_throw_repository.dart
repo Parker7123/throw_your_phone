@@ -1,7 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
-import 'throw_repository.dart'; // Make sure this imports the abstract ThrowRepository
+import 'throw_repository.dart';
 
 class SQLThrowRepository extends ThrowRepository {
   static const String _tableName = 'throw_entries';
@@ -36,9 +36,8 @@ class SQLThrowRepository extends ThrowRepository {
   @override
   Future<ThrowEntry> addThrow(ThrowEntry throwEntry) async {
     final db = await database;
-    // Insert the entry into the database. The database will assign an id.
     int id = await db.insert(_tableName, throwEntry.toMap());
-    // Return a new instance with the id set.
+
     return throwEntry.copyWith(id: id);
   }
 

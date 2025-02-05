@@ -177,6 +177,7 @@ class HistoryList extends StatelessWidget {
                     const Icon(Icons.height_rounded),
                     Text("${throwEntry.distance.toStringAsFixed(2)} m"),
                     const SizedBox(
+
                       width: 10,
                     ),
                     const Icon(Icons.straighten_rounded),
@@ -191,7 +192,7 @@ class HistoryList extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.only(left: 1.0),
                       child: Icon(
-                        Icons.calendar_month_rounded,
+                        Icons.calendar_month_outlined,
                       ),
                     ),
                     const SizedBox(
