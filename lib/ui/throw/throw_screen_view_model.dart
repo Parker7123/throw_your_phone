@@ -5,9 +5,7 @@ import 'package:throw_your_phone/data/repositories/throw_repository.dart';
 import 'package:throw_your_phone/data/services/throw_service_interface.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 
-enum ThrowState {
-  init, inProgress, done, saved
-}
+enum ThrowState { init, inProgress, done, saved }
 
 class ThrowScreenViewModel extends ChangeNotifier {
   ThrowScreenViewModel(

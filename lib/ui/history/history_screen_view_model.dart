@@ -46,8 +46,10 @@ class HistoryScreenViewModel extends ChangeNotifier {
         break;
       case SortCriteria.date:
         throwEntries.sort((a, b) => ascending
-            ? a.dateTime.millisecondsSinceEpoch.compareTo(b.dateTime.millisecondsSinceEpoch)
-            : b.dateTime.millisecondsSinceEpoch.compareTo(a.dateTime.millisecondsSinceEpoch));
+            ? a.dateTime.millisecondsSinceEpoch
+                .compareTo(b.dateTime.millisecondsSinceEpoch)
+            : b.dateTime.millisecondsSinceEpoch
+                .compareTo(a.dateTime.millisecondsSinceEpoch));
         break;
     }
     notifyListeners();

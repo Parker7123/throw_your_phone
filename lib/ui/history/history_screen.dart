@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:throw_your_phone/data/repositories/throw_ranking_repository.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 import 'package:throw_your_phone/ui/history/history_screen_view_model.dart';
 
@@ -22,7 +24,7 @@ class SortWindow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 300,
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,8 +36,8 @@ class SortWindow extends StatelessWidget {
               child: ListView(
                 children: [
                   ListTile(
-                    leading: Icon(Icons.straighten),
-                    title: Text('Distance'),
+                    leading: const Icon(Icons.straighten),
+                    title: const Text('Distance'),
                     onTap: () {
                       onSort(SortCriteria.distance);
                       Navigator.pop(context);
@@ -48,7 +50,7 @@ class SortWindow extends StatelessWidget {
                     selected: currentSort == SortCriteria.distance,
                   ),
                   ListTile(
-                    leading: Icon(Icons.height),
+                    leading: const Icon(Icons.height),
                     onTap: () {
                       onSort(SortCriteria.height);
                       Navigator.pop(context);
@@ -58,12 +60,12 @@ class SortWindow extends StatelessWidget {
                             ? const Icon(Icons.arrow_upward_rounded)
                             : const Icon(Icons.arrow_downward_rounded))
                         : null,
-                    title: Text('Height'),
+                    title: const Text('Height'),
                     selected: currentSort == SortCriteria.height,
                   ),
                   ListTile(
-                    leading: Icon(Icons.calendar_today),
-                    title: Text('Date'),
+                    leading: const Icon(Icons.calendar_today),
+                    title: const Text('Date'),
                     onTap: () {
                       onSort(SortCriteria.date);
                       Navigator.pop(context);
@@ -96,8 +98,8 @@ class HistoryScreen extends StatelessWidget {
           title: const Text('Throw History'),
           actions: [
             IconButton(
-                icon: Icon(Icons.sort),
-                padding: EdgeInsets.all(20),
+                icon: const Icon(Icons.sort),
+                padding: const EdgeInsets.all(20),
                 onPressed: () {
                   showModalBottomSheet(
                       context: context,
@@ -121,14 +123,18 @@ class HistoryScreen extends StatelessWidget {
                     listenable: viewModel,
                     builder: (context, _) {
                       if (viewModel.throwEntries.isEmpty) {
-                        return Center(child: Text("History is empty."));
+                        return const Center(child: Text("History is empty."));
                       }
                       return HistoryList(
                         throwEntries: viewModel.throwEntries,
                         delete: (entry) {
                           viewModel.delete(entry);
                         },
-                        addToGlobalRanking: (entry) {},
+                        addToGlobalRanking: (entry) {
+                          context
+                              .read<ThrowRankingRepository>()
+                              .insertThrow(entry.copyWith(id: null));
+                        },
                       );
                     });
               } else {
@@ -177,7 +183,6 @@ class HistoryList extends StatelessWidget {
                     const Icon(Icons.height_rounded),
                     Text("${throwEntry.distance.toStringAsFixed(2)} m"),
                     const SizedBox(
-
                       width: 10,
                     ),
                     const Icon(Icons.straighten_rounded),

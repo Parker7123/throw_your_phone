@@ -84,7 +84,8 @@ class ThrowService implements IThrowService {
         _accelerationData, start, end, _releaseTimestamp);
     var distance = horizontalThrowProcessor.calculateDistance(
         _accelerationData, start, end, _releaseTimestamp);
-    _completer.complete(ThrowEntry(distance: distance, height: height, dateTime: DateTime.now()));
+    _completer.complete(ThrowEntry(
+        distance: distance, height: height, dateTime: DateTime.now()));
   }
 
   void processData(UserAccelerometerEvent event) {

@@ -11,8 +11,13 @@ abstract class ThrowRepository {
 }
 
 class InMemoryThrowRepository extends ThrowRepository {
-  final _throws = List.generate(3,
-      (i) => ThrowEntry(id: i, distance: i.toDouble(), height: i.toDouble(), dateTime: DateTime.now()));
+  final _throws = List.generate(
+      3,
+      (i) => ThrowEntry(
+          id: i,
+          distance: i.toDouble(),
+          height: i.toDouble(),
+          dateTime: DateTime.now()));
 
   @override
   Future<ThrowEntry> addThrow(ThrowEntry throwEntry) {

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
 import 'package:throw_your_phone/data/repositories/throw_ranking_repository.dart';
 import 'package:throw_your_phone/models/throw_entry.dart';
 import 'package:throw_your_phone/ui/ranking/ranking_screen_view_model.dart';
@@ -27,8 +25,12 @@ class RankingScreen extends StatelessWidget {
                     Tab(
                         icon: Icon(Icons.leaderboard_outlined),
                         text: "Top All-Time"),
-                    Tab(icon: Icon(Icons.calendar_month_outlined), text: "Top Monthly"),
-                    Tab(icon: Icon(Icons.watch_later_outlined), text: "Top Today"),
+                    Tab(
+                        icon: Icon(Icons.calendar_month_outlined),
+                        text: "Top Monthly"),
+                    Tab(
+                        icon: Icon(Icons.watch_later_outlined),
+                        text: "Top Today"),
                   ]),
                 ),
                 body: Column(
@@ -37,15 +39,15 @@ class RankingScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: OutlinedButton.icon(
-                        iconAlignment: IconAlignment.end,
-                          icon: Icon(Icons.arrow_drop_down),
+                          iconAlignment: IconAlignment.end,
+                          icon: const Icon(Icons.arrow_drop_down),
                           onPressed: () {
                             viewModel.reloadRankings(
                                 viewModel.sortOption == SortOption.height
                                     ? SortOption.distance
                                     : SortOption.height);
                           },
-                          label: Container(
+                          label: SizedBox(
                             width: 120,
                             child: Builder(builder: (context) {
                               if (viewModel.sortOption == SortOption.height) {
@@ -117,7 +119,9 @@ class RankingScreenTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Icon(Icons.height_rounded),
-                Container(width: 100,child: Text("${throwEntry.height.toStringAsFixed(2)} m")),
+                SizedBox(
+                    width: 100,
+                    child: Text("${throwEntry.height.toStringAsFixed(2)} m")),
                 const SizedBox(
                   width: 10,
                 ),
@@ -136,9 +140,7 @@ class RankingScreenTile extends StatelessWidget {
                     Icons.person_outlined,
                   ),
                 ),
-                Text(throwEntry.username != null
-                    ? throwEntry.username!
-                    : "Anonymous"),
+                Text(throwEntry.username),
                 // const Padding(
                 //   padding: EdgeInsets.only(left: 1.0),
                 //   child: Icon(

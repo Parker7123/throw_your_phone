@@ -17,7 +17,6 @@ class VerticalThrowProcessor implements ThrowProcessor {
         ? max(startEvent.timestamp, releaseTimestamp)
         : startEvent.timestamp;
     var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
-    print('vertical');
     return 1 / 8 * 9.81 * flightTimeSeconds * flightTimeSeconds;
   }
 }
@@ -50,11 +49,9 @@ class HorizontalThrowProcessor implements ThrowProcessor {
       end = end - 1;
     }
     var startEvent = data[start];
-    var endEvent = data[end];
     var startTimestamp = releaseTimestamp != null
         ? max(startEvent.timestamp, releaseTimestamp)
         : startEvent.timestamp;
-    var flightTimeSeconds = (endEvent.timestamp - startTimestamp) / 1000;
     final int accelStartIndex = findAccelStartIndex(data, startTimestamp);
 
     List<double> dt = [];
@@ -75,7 +72,6 @@ class HorizontalThrowProcessor implements ThrowProcessor {
     var sz = integrate(vz, dt);
 
     double distance = sqrt(pow(sx.last, 2) + pow(sy.last, 2) + pow(sz.last, 2));
-    print("horizontal");
     return distance;
   }
 }

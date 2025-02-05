@@ -2,6 +2,7 @@ import 'package:throw_your_phone/models/throw_entry.dart';
 
 abstract class ThrowRankingRepository {
   Future<List<ThrowEntry>> getThrows(SortOption sortOption, {bool ascending});
+  Future<ThrowEntry> insertThrow(ThrowEntry throwEntry);
 }
 
 class InMemoryThrowRankingRepository extends ThrowRankingRepository {
@@ -25,6 +26,12 @@ class InMemoryThrowRankingRepository extends ThrowRankingRepository {
       }
     });
     return result;
+  }
+
+  @override
+  Future<ThrowEntry> insertThrow(ThrowEntry throwEntry) {
+    _throwEntries.add(throwEntry);
+    return Future.value(throwEntry);
   }
 }
 

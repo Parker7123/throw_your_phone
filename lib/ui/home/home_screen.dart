@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:throw_your_phone/data/services/google_login_service.dart';
 import 'package:throw_your_phone/ui/home/home_screen_view_model.dart';
 import 'package:throw_your_phone/ui/login/login_dialog.dart';
 import 'package:throw_your_phone/ui/throw/throw_screen.dart';
@@ -20,45 +19,47 @@ class HomeScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text("Throw your phone"),
-              bottom: const PreferredSize(preferredSize: Size(100, 20),
-              child: Padding(
-                padding: EdgeInsets.only(left: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text("Logged in as: Filip"),
-                  ],
+              bottom: const PreferredSize(
+                preferredSize: Size(100, 20),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text("Logged in as: Filip"),
+                    ],
+                  ),
                 ),
-              ),),
+              ),
               actions: [
                 if (!viewModel.loggedIn) ...[
                   TextButton.icon(
                     onPressed: () {
                       showDialog(
                           context: context,
-                          builder: (builderContext) =>
-                              LoginDialog(
+                          builder: (builderContext) => LoginDialog(
                                 logInFunction: () async {
                                   var result = await viewModel.logIn();
                                   if (result != null) {
-                                    Navigator.of(context).pop();
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
+                                    }
                                   }
                                 },
                               ));
                     },
-                    icon: Icon(Icons.info_outline),
-                    label: Text("Log in"),
+                    icon: const Icon(Icons.info_outline),
+                    label: const Text("Log in"),
                   )
-                ] else
-                  ...[
-                    TextButton.icon(
-                      onPressed: () {
-                        viewModel.logOut();
-                      },
-                      icon: const Icon(Icons.logout),
-                      label: const Text("Log out"),
-                    )
-                  ]
+                ] else ...[
+                  TextButton.icon(
+                    onPressed: () {
+                      viewModel.logOut();
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Log out"),
+                  )
+                ]
               ],
             ),
             body: Row(
@@ -74,8 +75,7 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      ThrowScreen(
+                                  builder: (context) => ThrowScreen(
                                         viewModel: ThrowScreenViewModel(
                                             throwRepository: context.read(),
                                             throwService: context.read()),

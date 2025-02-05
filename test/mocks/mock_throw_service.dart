@@ -17,7 +17,10 @@ class MockThrowService implements IThrowService {
     }
     _isCollectingData = true;
     return ThrowEntry(
-        id: 0, distance: _distanceToRetuen, height: _heightToReturn);
+        id: 0,
+        distance: _distanceToRetuen,
+        height: _heightToReturn,
+        dateTime: DateTime.now());
   }
 
   @override

@@ -20,7 +20,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      final tileFinder = find.textContaining(RegExp('Throw #.*'));
+      debugDumpApp();
+      final tileFinder = find.widgetWithIcon(Row, Icons.height_rounded);
 
       expect(tileFinder, findsWidgets);
     });

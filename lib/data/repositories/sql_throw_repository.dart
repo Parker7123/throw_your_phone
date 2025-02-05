@@ -26,7 +26,8 @@ class SQLThrowRepository extends ThrowRepository {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             distance REAL NOT NULL,
             height REAL NOT NULL,
-            date_time DATETIME NOT NULL
+            date_time DATETIME NOT NULL,
+            username VARCHAR NOT NULL
           )
         ''');
       },

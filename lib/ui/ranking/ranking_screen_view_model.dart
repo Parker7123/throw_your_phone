@@ -7,13 +7,11 @@ class RankingScreenViewModel extends ChangeNotifier {
   RankingScreenViewModel(
       {required ThrowRankingRepository repository,
       required SupabaseService supabaseService})
-      : _repository = repository,
-        _supabaseService = supabaseService {
+      : _repository = repository {
     _load();
   }
 
   final ThrowRankingRepository _repository;
-  final SupabaseService _supabaseService;
 
   bool loading = true;
   SortOption sortOption = SortOption.distance;
@@ -22,11 +20,6 @@ class RankingScreenViewModel extends ChangeNotifier {
   List<ThrowEntry> monthlyRanking = [];
   List<ThrowEntry> todayRanking = [];
 
-  login() {
-    _supabaseService.login();
-  }
-
-
   reloadRankings(SortOption sortOption) async {
     this.sortOption = sortOption;
     await _reloadRankings(sortOption);
@@ -34,13 +27,10 @@ class RankingScreenViewModel extends ChangeNotifier {
   }
 
   _reloadRankings(SortOption sortOption) async {
-    allTimeRanking =
-        await _repository.getThrows(sortOption, ascending: false);
+    allTimeRanking = await _repository.getThrows(sortOption, ascending: false);
 
-    monthlyRanking =
-        await _repository.getThrows(sortOption, ascending: false);
-    todayRanking =
-        await _repository.getThrows(sortOption, ascending: false);
+    monthlyRanking = await _repository.getThrows(sortOption, ascending: false);
+    todayRanking = await _repository.getThrows(sortOption, ascending: false);
     loading = false;
     notifyListeners();
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:throw_your_phone/data/repositories/sql_throw_repository.dart';
+import 'package:throw_your_phone/data/repositories/supabase_throw_ranking_repository.dart';
 import 'package:throw_your_phone/data/repositories/throw_ranking_repository.dart';
 import 'package:throw_your_phone/data/repositories/throw_repository.dart';
 import 'package:throw_your_phone/data/services/google_login_service.dart';
@@ -16,15 +17,18 @@ import 'package:throw_your_phone/ui/ranking/ranking_screen_view_model.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
-    Provider(
-      create: (context) => SQLThrowRepository() as ThrowRepository,
-    ),
-    Provider(create: (context) => InMemoryThrowRankingRepository() as ThrowRankingRepository),
-    Provider(create: (context) => ThrowService() as IThrowService),
     Provider(create: (context) => GoogleLoginService()),
     Provider(
         create: (context) =>
             SupabaseService(googleLoginService: context.read())),
+    Provider(
+      create: (context) => SQLThrowRepository() as ThrowRepository,
+    ),
+    Provider(
+        create: (context) =>
+            SupabaseThrowRankingRepository(supabaseService: context.read())
+                as ThrowRankingRepository),
+    Provider(create: (context) => ThrowService() as IThrowService),
   ], child: const MyApp()));
 }
 
@@ -71,7 +75,10 @@ class _MainScreenControllerState extends State<MainScreenController> {
         selectedIndex: currentPageIndex,
       ),
       body: <Widget>[
-        HomeScreen(viewModel: HomeScreenViewModel(loginService: context.read()),),
+        HomeScreen(
+          viewModel: HomeScreenViewModel(
+              loginService: context.read(), supabaseService: context.read()),
+        ),
         HistoryScreen(
           viewModel: HistoryScreenViewModel(throwRepository: context.read()),
         ),
